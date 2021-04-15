@@ -9,15 +9,22 @@ const ReplySchema = new Schema(
         default: () => new Types.ObjectId()
       },
       replyBody: {
-        type: String
+        type: String,
+        required: true
       },
       writtenBy: {
-        type: String
+        type: String,
+        required: true
       },
       createdAt: {
         type: Date,
         default: Date.now,
         get: createdAtVal => dateFormat(createdAtVal)
+      }
+    },
+    {
+      toJSON: {
+        getters: true
       }
     });
   
@@ -40,7 +47,10 @@ const CommentSchema = new Schema({
       getters: true
     }
   });
-
+CommentSchema.virtual('replyCount').get(function() {
+    return this.replies.length;
+});
+  
 const Comment = model('Comment', CommentSchema);
 
 module.exports = Comment;
